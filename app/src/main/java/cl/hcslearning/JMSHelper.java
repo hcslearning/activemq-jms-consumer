@@ -25,7 +25,7 @@ public class JMSHelper {
             throw new RuntimeException("Antes de recuperar la cola, primero debe crear una conexión");
         }
         try {
-            return (Destination) jndi.lookup(config.brokerQueue());
+            return (Destination) jndi.lookup(config.jndiQueue());
         } catch (NamingException e) {
             throw new RuntimeException(e);
         }

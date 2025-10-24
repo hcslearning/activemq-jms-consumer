@@ -1,5 +1,6 @@
 package cl.hcslearning;
 
+import cl.hcslearning.async.JMSConsumerAsync;
 import cl.hcslearning.sync.JMSConsumerSync;
 import jakarta.jms.*;
 import org.slf4j.Logger;
@@ -17,19 +18,14 @@ public class App {
                 "servidorArtemis");
 
         JMSHelper jmsHelper = new JMSHelper(config);
-        try (Connection conexion = jmsHelper.crearConexion()) {
-            Session sesion = conexion.createSession(Session.CLIENT_ACKNOWLEDGE);
-            Destination cola = jmsHelper.getCola();
-            MessageConsumer consumidor = sesion.createConsumer(cola);
-            conexion.start();
 
-            Message mensaje = consumidor.receive();
-            String body = mensaje.getBody(String.class);
-            LOGGER.info("Message Body: {}", body);
-            mensaje.acknowledge();
+        // ###### SYNC #########################################
+        //JMSConsumerSync consumidorSincronico = new JMSConsumerSync(jmsHelper);
+        //consumidorSincronico.recibirMensaje();
 
-        } catch (JMSException e) {
-            LOGGER.error("Error al crear la sesión", e);
-        }
+        // ###### ASYNC #########################################
+        JMSConsumerAsync consumidorAsincronico = new JMSConsumerAsync(jmsHelper);
+        consumidorAsincronico.recibirMensajes();
+
     }
 }
